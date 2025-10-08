@@ -44,6 +44,17 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **[Redberry](https://redberry.international/laravel-development)**
 - **[Active Logic](https://activelogic.com)**
 
+## Catatan Otentikasi
+
+- Rute login, profile, dan logout sekarang didefinisikan di `routes/api.php`, sehingga dapat diakses lewat `http://127.0.0.1:8000/api/auth/...`; gunakan `php artisan route:list` untuk memastikannya.
+- Konfigurasi SQLite: set `DB_CONNECTION=sqlite`, kosongkan pengaturan host/port, dan arahkan `DB_DATABASE` ke `database/database.sqlite`; buat file dengan `touch database/database.sqlite` lalu jalankan `php artisan migrate`.
+- Meninjau isi SQLite di Arch Linux: setelah memasang paket `sqlite`, jalankan `sqlite3 database/database.sqlite`, gunakan perintah `.tables` dan query `SELECT ...`, atau alternatifnya `php artisan tinker` dengan query Eloquent.
+
+### Langkah Selanjutnya
+
+- Sesuaikan URL Postman menjadi `http://127.0.0.1:8000/api/auth/login` sebelum menguji ulang.
+- Setelah migrasi ke SQLite, pastikan ada akun (misalnya `test@example.com`) pada tabel `users` sebelum melakukan login.
+
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
