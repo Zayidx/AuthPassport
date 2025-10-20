@@ -1,19 +1,19 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-Application code lives in `app/` with HTTP endpoints defined under `routes/`. Blade views, JavaScript, and styles are grouped in `resources/` while compiled assets publish to `public/`. Database migrations, factories, and seeders sit in `database/`; persistent runtime data is written into `storage/`. Automated tests are split between `tests/Feature` for end-to-end flows and `tests/Unit` for focused logic.
+Core Laravel code lives in `app/`, with controllers, jobs, and models grouped by responsibility. Register HTTP endpoints in `routes/web.php` and `routes/api.php`; keep controllers thin and push complex logic into actions or jobs. Blade templates stay under `resources/views`, while `resources/js` and `resources/css` feed the Vite build that outputs to `public/build`. Database migrations, factories, and seeders sit in `database/`, and runtime artifacts under `storage/` stay untracked.
 
 ## Build, Test, and Development Commands
-Run `composer install` and `npm install` after cloning to sync PHP and Vite dependencies. Start a local backend with `php artisan serve`; launch the asset pipeline using `npm run dev`. Apply schema changes via `php artisan migrate`. Before shipping, compile production assets through `npm run build`.
+After cloning, run `composer install` and `npm install` to hydrate dependencies. `composer setup` prepares a fresh workstation by copying `.env`, generating the app key, running migrations, and producing an initial Vite build. Use `php artisan serve` for the API and `npm run dev` for hot-reload assets during feature work, or launch the full stack with `composer dev` to run the server, queue listener, log tail, and Vite together. Apply schema changes through `php artisan migrate --force` and compile production assets via `npm run build` before deploying.
 
 ## Coding Style & Naming Conventions
-Follow PSR-12 for PHP with four-space indentation and strict typing where practical. Controllers, models, and jobs use StudlyCase, while configuration keys and helper functions stay snake_case. Frontend TypeScript and Vue files (if added) should respect ES modules and kebab-case filenames. Prefer framework generators (`php artisan make:model`, etc.) to keep namespaces consistent.
+Adhere to PSR-12 with four-space indentation and strict typing when practical. Controllers, models, jobs, and events use StudlyCase, configuration keys and helper functions stay snake_case, and Blade or Vite modules follow kebab-case filenames. Run `./vendor/bin/pint` prior to opening a pull request, and lean on `php artisan make:*` generators to keep namespaces and boilerplate consistent.
 
 ## Testing Guidelines
-Use `php artisan test` (wrapper around PHPUnit) for the default suite; pass `--parallel` when running on multi-core machines. Place HTTP-level assertions in Feature tests and pure business rules in Unit tests. Refresh the database between runs with the `RefreshDatabase` trait to avoid fixture drift.
+Execute `php artisan test` or `composer test` for the PHPUnit suite; add `--parallel` on multi-core machines. Feature tests capture HTTP behaviour using the `RefreshDatabase` trait, while Unit tests isolate pure business logic. Name tests after behaviour (`it_returns_validation_errors`) and stage fixtures under `tests/Fixtures` when scenarios need reusable data.
 
 ## Commit & Pull Request Guidelines
-Write imperative, present-tense commit messages (`Add user enrollment flow`). Group related changes per commit and avoid committing `storage/` or generated `public/build` assets. Pull requests should outline the user-facing impact, note any new artisan commands or environment keys, and include screenshots or curls for API changes.
+Write imperative, present-tense commits such as `Add enrollment flow`, group related changes, and leave `.env`, `storage/`, and compiled `public/build` assets out of version control. Pull requests should explain the user-facing impact, reference tracking issues, enumerate new artisan commands or environment keys, and include screenshots or curl snippets for API surfaces. Update `docs.md` or service provider registrations whenever behaviour changes affect downstream consumers.
 
 ## Security & Configuration Tips
-Copy `.env.example` to `.env` and keep secrets out of version control. When adding services, register bindings in service providers under `app/Providers` and document new permissions or API keys in the PR description.
+Copy `.env.example` to `.env`, store secrets outside the repository, and rotate keys before sharing environments. Register third-party integrations within dedicated service providers under `app/Providers` and document required credentials inside the PR description. Clear caches with `php artisan optimize:clear` when configuration or environment values change to avoid serving stale state.
